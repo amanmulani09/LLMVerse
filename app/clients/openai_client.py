@@ -9,7 +9,7 @@ class OpenAIClient:
             "Content-Type": "application/json"
         }
         
-    async def chat(self, messages:list[str]):
+    async def chat(self, messages:list[dict[str,str]]):
         async with httpx.AsyncClient(timeout=settings.TIMEOUT) as client:
             response = await client.post(
                 f"{self.base_url}/chat/completions",

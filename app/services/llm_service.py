@@ -1,0 +1,20 @@
+from tenacity import retry, stop_after_attempt, wait_exponential
+
+from app.clients.openai_client import OpenAIClient
+
+class LLMService:
+    
+    def __init__(self) -> None:
+        self.client = OpenAIClient()
+        
+    
+    @retry(stop=stop_after_attempt(3),wait=wait_exponential(min=1,max=3))
+    async def generate_response(self,user_input:str):
+        
+        messages = [
+            {"role" : "system", "content":"You are very helpful"},
+            {"role" : "user", "content":user_input}
+        ]
+        
+        response = await self.client.chat(messages)
+        return response["choices"][0]["message"]["content"]
